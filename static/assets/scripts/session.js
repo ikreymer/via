@@ -90,7 +90,7 @@
         }
         //endpoint = documentHelpers.absoluteURI('/app');
         // pywb PATCH
-        endpoint = documentHelpers.absoluteURI('/live/https://hypothes.is/app');
+        endpoint = documentHelpers.absoluteURI('/h/https://hypothes.is/app');
         return $resource(endpoint, {}, actions);
       }
     ];

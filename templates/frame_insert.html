@@ -10,12 +10,19 @@
 <script src='{{ wbrequest.host_prefix }}/{{ static_path }}/wb.js'> </script>
 
 <script>
+
+var embed_script = undefined;
+var delete_script = undefined;
+var statustext = undefined;
+
 _wb_js.create_banner_element = function(banner_id) {
     var banner = document.createElement('wb_div');
     banner.setAttribute('id', banner_id);
-    banner.innerHTML = "Hypothes.is Annotations";
+    banner.innerHTML = "Hypothes.is Annotations: <b id='status'>on</b> (<a href='#' onclick='toggle(this, window.frames[0])'>Disable</a>)";
 
     document.body.insertBefore(banner, document.body.firstChild);
+
+    statustext = document.getElementById('status');
 };
 
 function h_iframe_loaded(frame, event) {
@@ -37,13 +44,45 @@ function init_h($window) {
         return {showHighlights: true};
     }
 
-    var script = $window.document.createElement("script");
-    script.src = "/assets/embed.js";
+    if (delete_script) {
+        $window.document.body.removeChild(delete_script);
+        delete_script = null;
+    }
+
+    embed_script = $window.document.createElement("script");
+    embed_script.src = "/assets/embed.js";
     //script.src = "https://hypothes.is/app/embed.js";
-    script._no_rewrite = true;
-    $window.document.body.appendChild(script);
+    embed_script._no_rewrite = true;
+    $window.document.body.appendChild(embed_script);
 
     $window.annotator = true;
+}
+
+function delete_h($window) {
+    if (embed_script) {
+        $window.document.body.removeChild(embed_script);
+        embed_script = null;
+    }
+
+    delete_script = $window.document.createElement("script");
+    delete_script.src = "/assets/destroy.js";
+    delete_script._no_rewrite = true;
+    $window.document.body.appendChild(delete_script);
+
+    delete window.annotator;
+}
+
+function toggle(elem, $window) {
+    if (embed_script) {
+        delete_h($window);
+        elem.innerHTML = "Enable";
+        statustext.innerHTML = "off";
+    } else {
+        console.log("Enabling");
+        init_h($window);
+        elem.innerHTML = "Disable";
+        statustext.innerHTML = "on";
+    }
 }
 
 </script>

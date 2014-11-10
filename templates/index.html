@@ -1,0 +1,6 @@
+<h1>pywb-hypothesis</h1>
+Enter a url to view with <a href="https://hypothes.is/">hypothes.is</a> annotations:
+<form onsubmit="url = document.getElementById('search').value; if (url != '') { document.location.href = '/h/' + url; } return false;">
+<input id="search" name="search" maxsize="30" style="font-size: 14px" placeholder="Enter url to search"/>
+<button type="submit">Search</button>
+</form>

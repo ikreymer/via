@@ -1,0 +1,61 @@
+<html>
+<head>
+<!-- Start WB Insert -->
+<script>
+  wbinfo = {}
+  wbinfo.prefix = "{{ wbrequest.wb_prefix }}";
+  wbinfo.capture_url = "{{ url }}";
+  wbinfo.is_frame = true;
+</script>
+<script src='{{ wbrequest.host_prefix }}/{{ static_path }}/wb.js'> </script>
+
+<script>
+_wb_js.create_banner_element = function(banner_id) {
+    var banner = document.createElement('wb_div');
+    banner.setAttribute('id', banner_id);
+    banner.innerHTML = "Hypothes.is Annotations";
+
+    document.body.insertBefore(banner, document.body.firstChild);
+};
+
+function h_iframe_loaded(frame, event) {
+    init_h(window.frames[0]);
+
+    iframe_loaded(event);
+}
+
+function init_h($window) {
+    if (!$window.document || !$window.document.body) {
+        return;
+    }
+
+    if ($window.annotator) {
+        return;
+    }
+
+    $window.hypothesisConfig = function() {
+        return {showHighlights: true};
+    }
+
+    var script = $window.document.createElement("script");
+    script.src = "/assets/embed.js";
+    //script.src = "https://hypothes.is/app/embed.js";
+    script._no_rewrite = true;
+    $window.document.body.appendChild(script);
+
+    $window.annotator = true;
+}
+
+</script>
+
+
+
+<script src='{{ wbrequest.host_prefix }}/{{ static_path }}/wb_frame.js'> </script>
+<link rel='stylesheet' href='{{ wbrequest.host_prefix }}/{{ static_path }}/wb.css'/>
+<!-- End WB Insert -->
+<body style="margin: 0px; padding: 0px;">
+<div class="wb_iframe_div">
+<iframe src="{{ wbrequest.wb_prefix + embed_url }}" onload="h_iframe_loaded(this, event);" seamless="seamless" frameborder="0" scrolling="yes" class="wb_iframe"/>
+</div>
+</body>
+</html>

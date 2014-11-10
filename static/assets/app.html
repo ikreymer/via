@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    
+
+    <title>Hypothes.is</title>
+
+    
+    
+      <link rel="stylesheet" href="/assets/icomoon.css" />
+    
+      <link rel="stylesheet" href="/assets/scripts/vendor/katex/katex.min.css" />
+    
+      <link rel="stylesheet" href="/assets/styles/app.css?ea8e955d" />
+    
+      <link rel="stylesheet" href="/assets/styles/topbar.css?eb108ad7" />
+    
+    
+      <link rel="service" type="application/annotatorsvc+json" href="https://hypothes.is/api/" />
+    
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+
+    
+      <base target="_top" href="/" />
+    
+  </head>
+  
+<body ng-app="h" ng-controller="AppController">
+
+    
+  <!-- Toolbar -->
+  <div class="ng-cloak topbar" ng-class="frame.visible && 'shown'">
+    <div class="inner" ng-switch="persona">
+      <span class="pull-right" ng-switch-when="undefined">⋯</span>
+      <a class="pull-right" href=""
+         ng-click="login()"
+         ng-switch-when="null">Sign in</a>
+      <div class="dropdown pull-right user-picker" ng-switch-default>
+        <span role="button"
+              class="dropdown-toggle"
+              data-toggle="dropdown">{{ persona|persona }}<!--
+          --><span class="provider">/{{ persona|persona:'provider' }}</span><!--
+          --><i class="h-icon-triangle"></i></span>
+        <ul class="dropdown-menu pull-right" role="menu">
+          <li><a href="" ng-click="dialog.visible='true'">Account</a></li>
+          <li><a href="http://hypothes.is/contact/"
+                 target="_blank">Feedback</a></li>
+          <li><a href="/docs/help" target="_blank">Help</a></li>
+          <li><a href="/stream?q=user:{{ persona|persona }}"
+                 target="_blank">My Annotations</a></li>
+          <li ng-click="logout()">Sign out</li>
+        </ul>
+      </div>
+
+      <!-- Searchbar -->
+      <div class="simple-search"
+           query="search.query"
+           on-search="search.update(query)"
+           on-clear="search.clear()"></div>
+      <!-- / Searchbar -->
+    </div>
+  </div>
+  <!-- / Toolbar -->
+
+  <!-- Wrapper -->
+  <div id="wrapper" whenscrolled="loadMore(10)">
+    <!-- Dialog -->
+    <div class="content ng-cloak" ng-if="dialog.visible">
+      <div id="dialog" class="sheet">
+        <i class="close h-icon-cancel"
+           role="button"
+           title="Close"
+           ng-click="dialog.visible = false"></i>
+        <div ng-if="persona">
+          <div class="tabbable" ng-controller="AccountController">
+  <div class="tab-pane" title="Account">
+    <form class="account-form form" name="changePasswordForm" ng-submit="submit(changePasswordForm)" novalidate form-validate>
+      <h2 class="form-heading"><span>Change Your Password</span></h2>
+
+      <div class="form-field">
+        <label class="form-label" for="field-old-password">Current Password:</label>
+        <input id="field-old-password" class="form-input" type="password" name="pwd" required ng-model="changePassword.pwd" />
+
+        <ul class="form-error-list">
+          <li class="form-error" ng-show="changePasswordForm.pwd.$error.required">Please enter your current password.</li>
+          <li class="form-error" ng-show="changePasswordForm.pwd.$error.minlength">Your password does not match the one we have on record.</li>
+          <li class="form-error" ng-show="changePasswordForm.pwd.$error.response">{{changePasswordForm.pwd.responseErrorMessage}}</li>
+        </ul>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="field-new-password">New Password:</label>
+        <input id="field-new-password" class="form-input" type="password" name="password" required ng-model="changePassword.password" />
+
+        <ul class="form-error-list">
+          <li class="form-error" ng-show="changePasswordForm.password.$error.required">Please enter a password.</li>
+          <li class="form-error" ng-show="changePasswordForm.password.$error.minlength">Passwords must be at least 2 characters.</li>
+          <li class="form-error" ng-show="changePasswordForm.password.$error.response">{{changePasswordForm.password.responseErrorMessage}}</li>
+        </ul>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="field-confirm-password">Confirm Password:</label>
+        <input id="field-confirm-password" class="form-input" type="password" name="confirmPassword" ng-model="changePassword.confirmPassword" match="changePassword.password" required>
+
+        <ul class="form-error-list">
+          <li class="form-error" ng-show="changePasswordForm.confirmPassword.$error.required">Please confirm your new password.</li>
+          <li class="form-error" ng-show="changePasswordForm.confirmPassword.$error.minlength">Passwords must be at least 2 characters.</li>
+          <li class="form-error" ng-show="changePasswordForm.confirmPassword.$error.match">Passwords do not match.</li>
+        </ul>
+      </div>
+
+      <div class="form-actions">
+        <div class="form-actions-buttons">
+          <button class="btn" type="submit"
+                  status-button="changePasswordForm">Update</button>
+        </div>
+      </div>
+    </form>
+
+    <form class="account-form form" name="deleteAccountForm" ng-submit="delete(deleteAccountForm)" novalidate form-validate>
+      <h2 class="form-heading"><span>Delete Account</span></h2>
+      <p class="form-description">This will delete your user account. If you would like to delete your annotations, do so before continuing or email us at <a href="mailto:support@hypothes.is">support@hypothes.is</a>.</p>
+
+      <div class="form-field">
+        <label class="form-label" for="confirm-account-deletion">Confirm Password:</label>
+        <input id="confirm-account-deletion" class="form-input" type="password" name="pwd" ng-model="deleteAccount.pwd" required>
+
+        <ul class="form-error-list">
+          <li class="form-error" ng-show="deleteAccountForm.pwd.$error.required">Please enter your password to confirm</li>
+          <li class="form-error" ng-show="deleteAccountForm.pwd.$error.response">{{deleteAccountForm.pwd.responseErrorMessage}}</li>
+        </ul>
+      </div>
+
+      <div class="form-actions">
+        <div class="form-actions-buttons">
+          <button class="btn btn-danger" type="submit"
+                  status-button="deleteAccountForm">Delete Account</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+        </div>
+        <div ng-if="!persona">
+          <div class="form-vertical tabbable"
+     tab-reveal="['forgot_password', 'reset_password']"
+     ng-controller="AuthController as vm"
+     ng-form="form"
+     ng-model="auth.tab"
+     ng-submit="vm.submit(form[auth.tab])">
+  <!-- Login -->
+  <form data-title="Sign in"
+        data-value="login"
+        class="form tab-pane"
+        name="login"
+        form-validate
+        novalidate>
+
+    <p class="form-description form-error"
+       ng-show="login.$error.response">
+      {{login.responseErrorMessage}}
+    </p>
+
+    <div class="form-field">
+      <label class="form-label" for="field-login-username">Username:</label>
+      <input class="form-input" type="text" id="field-login-username"
+             name="username" value=""
+             ng-model="model.username" ng-minlength="3"
+             required autocapitalize="false" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="login.username.$error.required"
+            >Please enter your username.</li>
+        <li class="form-error"
+            ng-show="login.username.$error.minlength"
+            >Usernames are at least 3 characters.</li>
+        <li class="form-error"
+            ng-show="login.username.$error.response"
+            >{{login.username.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="field-login-password">Password:</label>
+      <input class="form-input" id="field-login-password"
+             type="password" name="password" value=""
+             ng-model="model.password"
+             required autocapitalize="false" autocorrect="false" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="login.password.$error.required"
+            >Please enter your password.</li>
+        <li class="form-error"
+            ng-show="login.password.$error.response"
+            >{{login.password.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-actions">
+      <div class="form-actions-message">
+        <a href="" ng-click="auth.tab = 'forgot_password'"
+           >Forgot your password?</a>
+      </div>
+      <div class="form-actions-buttons">
+        <button class="btn btn-primary" type="submit" name="login"
+                status-button="login">Sign in</button>
+      </div>
+    </div>
+  </form>
+  <!-- / Login -->
+
+  <!-- Register -->
+  <form data-title="Create an account"
+        data-value="register"
+        class="form tab-pane"
+        name="register"
+        form-validate
+        novalidate>
+
+    <p class="form-description form-error"
+       ng-show="register.$error.response">
+      {{register.responseErrorMessage}}
+    </p>
+
+    <div class="form-field">
+      <label class="form-label" for="field-register-username"
+             >Username:
+        <span class="form-hint">(between 3 and 15 characters)</span></label>
+      <input class="form-input" id="field-register-username"
+             type="text" name="username" value=""
+             required autocapitalize="false" ng-model="model.username"
+             ng-minlength="3" ng-maxlength="15"
+             ng-pattern="/^[A-Za-z0-9._]+$/"
+             ng-model-options="{updateOn: 'blur'}" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="register.username.$error.required"
+            >Please choose a username.</li>
+        <li class="form-error"
+            ng-show="register.username.$error.minlength"
+            >Usernames must be at least 3 characters.</li>
+        <li class="form-error"
+            ng-show="register.username.$error.maxlength"
+            >Usernames must be 15 characters at most.</li>
+        <li class="form-error"
+            ng-show="register.username.$error.pattern"
+            >Only letters, numbers, underscore and dot are allowed.</li>
+        <li class="form-error"
+            ng-show="register.username.$error.response"
+            >{{register.username.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="field-register-email"
+             >Email Address:</label>
+      <input class="form-input" id="field-register-email"
+             type="email" name="email" value=""
+             ng-model="model.email" required autocapitalize="false"
+             ng-model-options="{updateOn: 'blur'}" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="register.email.$error.email"
+            >Is this an email address?</li>
+        <li class="form-error"
+            ng-show="register.email.$error.required"
+            >Please enter your email.</li>
+        <li class="form-error"
+            ng-show="register.email.$error.response"
+            >{{register.email.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="field-register-password"
+             >Password:
+        <span class="form-hint">(at least two characters)</span></label>
+      <input id="field-register-password" class="form-input"
+             type="password" name="password" value=""
+             required autocapitalize="false" autocorrect="false"
+             ng-minlength="2" ng-model="model.password"
+             ng-model-options="{updateOn: 'blur'}" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="register.password.$error.required"
+            >Please enter a password.</li>
+        <li class="form-error"
+            ng-show="register.password.$error.minlength"
+            >Passwords must be at least 2 characters.</li>
+        <li class="form-error"
+            ng-show="register.password.$error.response"
+            >{{register.password.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-actions">
+      <div class="form-actions-message">
+        You are agreeing to be bound by our <a href="terms-of-service" target="_blank"
+           >Terms of Service</a>.
+      </div>
+      <div class="form-actions-buttons">
+        <button class="btn" type="submit" name="sign_up"
+                status-button="register">Sign up</button>
+      </div>
+    </div>
+
+  </form>
+  <!-- / Register -->
+
+  <!-- Forgot password -->
+  <form data-title="Confirm account"
+        data-value="forgot_password"
+        class="form tab-pane"
+        name="forgot_password"
+        form-validate
+        novalidate>
+
+    <p class="form-description form-error"
+       ng-show="forgot_password.$error.response">
+      {{forgot_passwordresponseErrorMessage}}
+    </p>
+    <div class="form-field">
+      <label class="form-label" for="field-forgot-email"
+             >Please enter your email address:</label>
+      <input class="form-input" id="field-forgot-email"
+             type="email" name="email" value=""
+             required autocapitalize="false" ng-model="model.email" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="forgot_password.$error.email"
+            >Is this an email address?</li>
+        <li class="form-error"
+            ng-show="forgot_password.$error.required"
+            >Please enter your email.</li>
+        <li class="form-error"
+            ng-show="forgot_password.$error.response"
+            >{{forgot_password.email.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-actions">
+      <div class="form-actions-buttons">
+        <button class="btn" type="submit" name="forgot_password"
+                status-button="forgot_password">Request access</button>
+      </div>
+    </div>
+  </form>
+  <!-- / Forgot password -->
+
+  <!-- Reset password -->
+  <form data-title="Activate an account"
+        data-value="reset_password"
+        class="form tab-pane"
+        name="reset_password"
+        form-validate
+        novalidate>
+
+    <p class="form-description form-error"
+       ng-show="reset_password.$error.response">
+      {{reset_password.responseErrorMessage}}
+    </p>
+
+    <div class="form-field">
+      <label class="form-label" for="field-activate-code"
+             >Your activation code:</label>
+      <input class="form-input" id="field-activate-code"
+             type="text" name="code" value=""
+             required autocorrect="false" autocapitalize="false"
+             ng-model="model.code" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="reset_password.code.$error.required"
+            >Please enter your activation code</li>
+        <li class="form-error"
+            ng-show="reset_password.code.$error.response"
+            >{{reset_password.code.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label" for="field-activate-password"
+             >Account password:
+        <span class="form-hint">(at least two characters)</span>
+      </label>
+      <input class="form-input" id="field-activate-password"
+             type="password" name="password" value=""
+             required autocapitalize="false" autocorrect="false"
+             ng-minlength="2" ng-model="model.password" />
+      <ul class="form-error-list">
+        <li class="form-error"
+            ng-show="reset_password.password.$error.required"
+            >Please choose a password.</li>
+        <li class="form-error"
+            ng-show="reset_password.password.$error.minlength"
+            >Passwords must be at least 2 characters.</li>
+        <li class="form-error"
+            ng-show="reset_password.password.$error.response"
+            >{{reset_password.password.responseErrorMessage}}</li>
+      </ul>
+    </div>
+
+    <div class="form-actions">
+      <div class="form-actions-buttons">
+        <button class="btn" type="submit" name="activate"
+                status-button="activate">Activate</button>
+      </div>
+    </div>
+  </form>
+  <!--/ Reset password -->
+</div>
+
+        </div>
+      </div>
+    </div>
+    <!-- / Dialog -->
+
+    <!-- Angular view -->
+    <main class="content" ng-view=""></main>
+  </div>
+  <!-- / Wrapper -->
+
+    
+  <script type="text/ng-template" id="annotation.html">
+    <header class="annotation-header">
+  <!-- Deletion notice -->
+  <span ng-if="!vm.editing && vm.annotation.deleted">Annotation deleted.</span>
+
+  <!-- User -->
+  <span ng-if="vm.annotation.user">
+    <a class="annotation-user"
+       target="_blank"
+       ng-href="{{baseURI}}u/{{vm.annotation.user}}"
+       >{{vm.annotation.user | persona}}</a>
+    <i class="small h-icon-locked" ng-show="vm.isPrivate() && !vm.editing"></i>
+    <i class="small h-icon-highlighter" ng-show="vm.isHighlight() && !vm.editing"></i>
+    <i class="small h-icon-comment" ng-show="vm.isComment()"></i>
+    <span class="annotation-citation"
+          ng-if="!vm.embedded"
+          ng-show="vm.document.title">
+      on &ldquo;<a href="{{vm.document.uri}}" target="_blank"
+                   >{{vm.document.title}}</a>&rdquo;
+      <span class="annotation-citation-domain"
+            ng-show="vm.document.domain != vm.document.title"
+            >({{vm.document.domain}})</span>
+    </span>
+    <!-- Editing controls -->
+    <aside class="pull-right" ng-if="vm.editing">
+      <privacy ng-click="$event.stopPropagation()"
+               ng-if="vm.annotation.permissions && vm.editing && action != 'delete'"
+               ng-model="vm.annotation.permissions"
+               class="dropdown privacy pull-right"
+               name="privacy" />
+    </aside>
+    <!-- / Editing controls -->
+  </span>
+
+  <!-- Timestamp -->
+  <a class="annotation-timestamp small pull-right"
+     target="_blank"
+     title="{{vm.annotation.update | moment:'LLLL'}}"
+     ng-if="!vm.editing && vm.annotation.updated"
+     ng-href="{{baseURI}}a/{{vm.annotation.id}}"
+     >{{vm.annotation.updated | fuzzyTime | date : mediumDate}}</a>
+</header>
+
+<!-- Excerpts -->
+<section class="annotation-target"
+         ng-repeat="target in vm.annotation.target track by $index">
+  <blockquote class="annotation-quote"
+              ng-bind-html="selector.exact"
+              ng-repeat="selector in target.selector
+                         | filter : {'type': 'TextQuoteSelector'}
+                         track by $index"></blockquote>
+</section>
+<!-- / Excerpts -- >
+
+<!-- Body -->
+<section name="text"
+         class="annotation-body"
+         ng-model="vm.annotation.text"
+         ng-readonly="!vm.editing"
+         markdown>
+</section>
+<!-- / Body -->
+
+<!-- Tags -->
+<div class="annotation-section form-field" ng-if="vm.editing">
+  <tags-input ng-model="vm.annotation.tags"
+              name="tags"
+              class="tags"
+              placeholder="Add tags…"
+              replace-spaces-with-dashes="false"
+              enable-editing-last-tag="true"></tags-input>
+</div>
+
+<div class="annotation-section tags tags-read-only"
+     ng-if="vm.annotation.tags.length && !vm.editing">
+  <ul class="tag-list">
+    <li class="tag-item" ng-repeat="tag in vm.annotation.tags">
+      <a href="/stream?q=tag:'{{tag.text}}'" target="_blank">{{tag.text}}</a>
+    </li>
+  </ul>
+</div>
+<!-- / Tags -->
+
+<footer class="annotation-footer form-actions"
+        ng-if="vm.editing"
+        ng-switch="vm.action">
+  <div class="form-actions-buttons form-actions-left">
+    <button ng-switch-when="edit"
+            ng-click="vm.save()"
+            class="btn"><i class="h-icon-checkmark btn-icon"></i> Save</button>
+    <button ng-switch-when="delete"
+            ng-click="vm.save()"
+            class="btn"><i class="h-icon-checkmark btn-icon"></i> Delete</button>
+    <button ng-switch-default
+            ng-click="vm.save()"
+            class="btn"><i class="h-icon-checkmark btn-icon"></i> Save</button>
+    <button class="btn btn-clean"
+            ng-click="vm.revert()"
+            ><i class="h-icon-x btn-icon"></i> Cancel</button>
+  </div>
+</footer>
+
+<footer class="annotation-footer annotation-actions"
+        ng-if="!vm.editing && vm.annotation.id">
+  <a class="small magicontrol" href="" title="Reply"
+    ng-click="vm.reply()"
+    ><i class="h-icon-reply"></i> Reply</a>
+  <span class="magicontrol share-dialog-wrapper">
+    <a class="small dropdown-toggle" href="" title="Share"
+      ><i class="h-icon-export"></i> Share</a>
+    <span class="share-dialog" ng-click="$event.stopPropagation()">
+      <a class="h-icon-export"
+        target="_blank"
+        ng-href="{{vm.annotationURI}}"></a>
+      <input type="text" value="{{vm.annotationURI}}" readonly>
+    </span>
+  </span>
+  <a class="small magicontrol" href="" title="Edit"
+    ng-show="vm.authorize('update')"
+    ng-click="vm.edit()"
+    ><i class="h-icon-copy"></i> Edit</a>
+  <a class="small magicontrol" href="" title="Delete"
+    ng-show="vm.authorize('delete')"
+    ng-click="vm.delete()"
+    ><i class="h-icon-x"></i> Delete…</a>
+</footer>
+
+  </script>
+  <script type="text/ng-template" id="markdown.html">
+    <div ng-hide="readonly" class="markdown-tools" ng-class="preview && 'disable'">
+  <span class="markdown-preview-toggle">
+    <a class="markdown-tools-badge h-icon-markdown" href="https://help.github.com/articles/markdown-basics" title="Parsed as Markdown" target="_blank"></a>
+    <a href="" class="markdown-tools-toggle" ng-click="togglePreview()" ng-show="!preview">Preview</a>
+    <a href="" class="markdown-tools-toggle" ng-click="togglePreview()" ng-show="preview">Write</a>
+  </span>
+  <i class="h-icon-bold markdown-tools-button" ng-click="insertBold()" title="Embolden text"></i>
+  <i class="h-icon-italic markdown-tools-button" ng-click="insertItalic()" title="Italicize text"></i>
+  <i class="h-icon-quote markdown-tools-button" ng-click="insertQuote()" title="Quote text"></i>
+  <i class="h-icon-link markdown-tools-button" ng-click="insertLink()" title="Insert link"></i>
+  <i class="h-icon-image markdown-tools-button" ng-click="insertIMG()" title="Insert image"></i>
+  <i class="h-icon-math markdown-tools-button" ng-click="insertMath()" title="Insert mathematical notation (LaTex is supported)"></i>
+  <i class="h-icon-numlist markdown-tools-button" ng-click="insertNumList()" title="Insert numbered list"></i>
+  <i class="h-icon-ulist markdown-tools-button" ng-click="insertList()" title="Insert list"></i>
+  <i class="h-icon-code markdown-tools-button" ng-click="insertCode()" title="Insert code"></i>
+</div>
+<textarea class="form-input form-textarea js-markdown-input"
+          ng-hide="readonly || preview"
+          ng-click="$event.stopPropagation()"
+          ng-required="required"></textarea>
+<div class="styled-text js-markdown-preview" ng-class="preview && 'markdown-preview'" ng-dblclick="togglePreview()" ng-bind-html="rendered" ng-show="readonly || preview"></div>
+
+  </script>
+  <script type="text/ng-template" id="privacy.html">
+    <div class="dropdown">
+  <span name="privacy"
+        role="button"
+        class="dropdown-toggle"
+        data-toggle="dropdown">
+        <i class="small" ng-class="{'h-icon-earth': level == 'Public', 'h-icon-locked': level == 'Only Me'}"></i>
+        {{level}}
+        <i class="h-icon-triangle"></i>
+  </span>
+  <ul class="dropdown-menu" role="menu">
+    <li ng-repeat="p in levels" ng-click="setLevel(p)">
+      <i class="small" ng-class="{'h-icon-earth': p == 'Public',
+                                  'h-icon-locked': p == 'Only Me'}"></i>
+      {{p}}
+    </li>
+  </ul>
+</div>
+
+  </script>
+  <script type="text/ng-template" id="viewer.html">
+    <!-- Thread view -->
+<ul class="stream-list"
+    deep-count="count"
+    thread="threading.root"
+    thread-filter="search.query">
+  <li ng-show="threadFilter.active()"
+      ><span ng-pluralize
+             count="count('match')"
+             when="{'0': 'No results for “{{search.query}}”.',
+                    'one': 'Found one result.',
+                    'other': 'Found {} results.'}"></span>
+      <a href="" ng-click="clearSelection()">Clear search</a>.</li>
+  <li ng-show="!threadFilter.active() && selectedAnnotations"
+      ><span ng-pluralize
+             count="selectedAnnotationsCount"
+             when="{'0': 'No annotations selected',
+                    'one': 'Showing 1 selected annotation.',
+                    'other': 'Showing {} selected annotations.'}"></span>
+      <a href="" ng-click="clearSelection()">Clear selection</a>.</li>
+  <li ng-show="isStream">
+    <span class="ng-cloak dropdown">
+      <span role="button"
+            class="dropdown-toggle"
+            data-toggle="dropdown">
+        Sorted by {{sort.name | lowercase}}
+        <i class="h-icon-triangle small"></i>
+      </span>
+      <ul class="dropdown-menu pull-right" role="menu">
+        <li ng-click="sort.name = option"
+            ng-hide="option == 'Location' && !isEmbedded"
+            ng-repeat="option in ['Newest', 'Oldest', 'Location']"
+            >{{option}}</li>
+      </ul>
+    </span>
+  </li>
+  <li class="paper thread"
+      deep-count="count"
+      thread="child" thread-filter
+      thread-collapsed="!search.query"
+      ng-include="'thread.html'"
+      ng-mouseenter="activate(child.message)"
+      ng-mouseleave="activate()"
+      ng-repeat="child in vm.container.children | orderBy : sort.predicate"
+      ng-show="vm.container && shouldShowThread(child) &&
+               (count('edit') || count('match') || !threadFilter.active())">
+  </li>
+</ul>
+<!-- / Thread view -->
+
+  </script>
+  <script type="text/ng-template" id="thread.html">
+    <a href="" class="threadexp"
+   title="{{vm.collapsed && 'Expand' || 'Collapse'}}"
+   ng-if="vm.container.parent.parent"
+   ><span ng-class="{'h-icon-plus': !!vm.collapsed,
+                     'h-icon-minus': !vm.collapsed}"></span></a>
+
+<!-- Annotation -->
+<div ng-if="vm.container && !vm.container.message" class="thread-deleted">
+  <p><em>Message not available.</em></p>
+</div>
+
+<article class="annotation thread-message"
+         name="annotation"
+         annotation="vm.container.message"
+         annotation-embedded="{{isEmbedded}}"
+         ng-if="vm.container.message"
+         ng-show="threadFilter.check(vm.container)">
+</article>
+
+<!-- Reply count -->
+<div class="thread-reply" ng-show="vm.showReplyToggle(count('message'))">
+  <a class="reply-count small"
+     href=""
+     ng-if="!threadFilter.active() || count('message') == count('match')"
+     ng-pluralize count="count('message') - 1"
+     when="{'0': '', one: '1 reply', other: '{} replies'}"></a>
+</div>
+
+<div class="thread-load-more" ng-show="threadFilter.active()">
+  <a class="load-more small"
+     href=""
+     ng-click="threadFilter.active(false)"
+     ng-if="vm.container.message.id"
+     ng-pluralize count="count('message') - count('match')"
+     when="{'0': '',
+           one: 'View one more in conversation',
+           other: 'View {} more in conversation'}"
+     ></a>
+</div>
+
+<!-- Replies -->
+<ul class="thread-list" ng-hide="vm.collapsed">
+  <li class="thread"
+      deep-count="count"
+      thread="child" thread-filter
+      ng-include="'thread.html'"
+      ng-init="child.message.id || threadFilter.active(false)"
+      ng-repeat="child in vm.container.children
+                 | orderBy : 'message.updated' : true"
+      ng-show="count('edit') || count('match') || !threadFilter.active()">
+  </li>
+</ul>
+
+  </script>
+  <script type="text/ng-template" id="notification.html">
+    <div class="pull-right">
+    <div title="Close" class="cancel-icon" ng-click="close()"></div>
+</div>
+<div ng-click="callback()" class="pull-left notif-text">
+ {{model.text}}
+</div>
+
+  </script>
+
+    
+  
+    <script src="/assets/scripts/vendor/jquery-1.10.2.js"></script>
+  
+    <script src="/assets/scripts/vendor/angular.js"></script>
+  
+    <script src="/assets/scripts/vendor/angular-animate.js"></script>
+  
+    <script src="/assets/scripts/vendor/angular-route.js"></script>
+  
+    <script src="/assets/scripts/vendor/angular-sanitize.js"></script>
+  
+    <script src="/assets/scripts/vendor/ng-tags-input.js"></script>
+  
+    <script src="/assets/scripts/vendor/gettext.js"></script>
+  
+    <script src="/assets/scripts/vendor/annotator.js"></script>
+  
+    <script src="/assets/scripts/vendor/annotator.auth.js"></script>
+  
+    <script src="/assets/scripts/plugin/bridge.js?816ad017"></script>
+  
+    <script src="/assets/scripts/plugin/discovery.js?e0a0834a"></script>
+  
+    <script src="/assets/scripts/vendor/annotator.document.js"></script>
+  
+    <script src="/assets/scripts/vendor/annotator.permissions.js"></script>
+  
+    <script src="/assets/scripts/vendor/annotator.store.js"></script>
+  
+    <script src="/assets/scripts/plugin/threading.js?e94c4845"></script>
+  
+    <script src="/assets/scripts/vendor/jschannel.js"></script>
+  
+    <script src="/assets/scripts/vendor/jwz.js"></script>
+  
+    <script src="/assets/scripts/vendor/katex/katex.min.js"></script>
+  
+    <script src="/assets/scripts/vendor/moment-with-langs.js"></script>
+  
+    <script src="/assets/scripts/vendor/jstz.js"></script>
+  
+    <script src="/assets/scripts/vendor/moment-timezone.js"></script>
+  
+    <script src="/assets/scripts/vendor/moment-timezone-data.js"></script>
+  
+    <script src="/assets/scripts/vendor/Markdown.Converter.js"></script>
+  
+    <script src="/assets/scripts/vendor/polyfills/autofill-event.js"></script>
+  
+    <script src="/assets/scripts/vendor/sockjs-0.3.4.js"></script>
+  
+    <script src="/assets/scripts/vendor/uuid.js"></script>
+  
+    <script src="/assets/scripts/app.js?da3bfe4e"></script>
+  
+    <script src="/assets/scripts/vendor/angular-bootstrap.js"></script>
+  
+    <script src="/assets/scripts/helpers.js?fb4ba456"></script>
+  
+    <script src="/assets/scripts/vendor/angular-resource.js"></script>
+  
+    <script src="/assets/scripts/session.js?b014f0af"></script>
+  
+    <script src="/assets/scripts/auth.js?0656ec4b"></script>
+  
+
+  </body>
+</html>

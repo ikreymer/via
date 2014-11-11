@@ -1,2 +1,2 @@
-pywb==0.6.4
+git+git://github.com/ikreymer/pywb.git@develop
 uwsgi>=2.0

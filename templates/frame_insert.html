@@ -61,12 +61,9 @@ function init_h($window) {
     }
 
     embed_script = $window.document.createElement("script");
-    embed_script.src = "/assets/embed.js";
-    //script.src = "https://hypothes.is/app/embed.js";
+    embed_script.src = "https://hypothes.is/app/embed.js";
     embed_script._no_rewrite = true;
     $window.document.body.appendChild(embed_script);
-
-    $window.annotator = true;
 }
 
 function delete_h($window) {
@@ -76,11 +73,9 @@ function delete_h($window) {
     }
 
     delete_script = $window.document.createElement("script");
-    delete_script.src = "/assets/destroy.js";
+    delete_script.src = "https://hypothes.is/assets/destroy.js";
     delete_script._no_rewrite = true;
     $window.document.body.appendChild(delete_script);
-
-    delete window.annotator;
 }
 
 function toggle(elem, $window) {

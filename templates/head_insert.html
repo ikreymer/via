@@ -28,7 +28,8 @@
 
 <script src='{{ wbrequest.host_prefix }}/{{ static_path }}/wb.js'> </script>
 
-{# % include banner_html ignore missing % #}
+<!-- Set canonical url -->
+<link rel="canonical" href="{{ cdx.original }}"/>
 
 <!-- load banner -->
 <script> if (_wb_js) { _wb_js.load(); }</script>

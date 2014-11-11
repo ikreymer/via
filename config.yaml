@@ -2,7 +2,6 @@ collections:
     h:
         index_paths: $liveweb
         frame_insert_html: ./templates/frame_insert.html
-#        banner_html: ./templates/banner.html
         head_insert_html: ./templates/head_insert.html
         search_html: ./templates/index.html
         redir_to_exact: false
@@ -12,6 +11,5 @@ home_html: ./templates/index.html
 static_routes:
     static/default: pywb/static/
     static/ann: ./static/
-    assets: ./static/assets/
 
 framed_replay: true

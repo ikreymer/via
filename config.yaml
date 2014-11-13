@@ -5,6 +5,7 @@ collections:
         head_insert_html: ./templates/head_insert.html
         search_html: ./templates/index.html
         redir_to_exact: false
+        cookie_scope: exact
 
 home_html: ./templates/index.html
 

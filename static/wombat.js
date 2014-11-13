@@ -892,25 +892,25 @@ _WBWombat = (function() {
 
         // Ajax
         init_ajax_rewrite();
-        init_worker_override();
+        //init_worker_override();
 
         // setAttribute
-        init_setAttribute_override();
+        // init_setAttribute_override();
 
         // Image
-        init_image_override();
+        //init_image_override();
 
         // Cookies
-        init_cookies_override();
+        //init_cookies_override();
 
         // DOM
-        init_dom_override();
+        //init_dom_override();
 
         // Random
-        init_seeded_random(timestamp);
+        //init_seeded_random(timestamp);
 
         // Date
-        init_date_override(timestamp);
+        //init_date_override(timestamp);
 
         // expose functions
         this.extract_orig = extract_orig;

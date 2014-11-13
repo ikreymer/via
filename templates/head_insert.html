@@ -28,6 +28,21 @@
 
 <script src='{{ wbrequest.host_prefix }}/{{ static_path }}/wb.js'> </script>
 
+<script src='{{ wbrequest.host_prefix }}/static/ann/inject_h.js'> </script>
+
+<script>
+var inited = false;
+
+_wb_js.create_banner_element = function(banner_id) {
+    if (inited || !window.document) {
+        return;
+    }
+
+    __pywb_h.init_h(window);
+    inited = true;
+}
+</script>
+
 <!-- Set canonical url -->
 <link rel="canonical" href="{{ cdx.original }}"/>
 

@@ -13,4 +13,4 @@ static_routes:
     static/default: pywb/static/
     static/ann: ./static/
 
-framed_replay: true
+framed_replay: false

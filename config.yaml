@@ -1,6 +1,14 @@
+pdf_redir: &pdf_redir '/static/ann/viewer/web/viewer.html?file=/h/id_/{0}'
+
+
 collections:
     h:
         index_paths: $liveweb
+        wb_handler_class: !!python/name:pywb_h.CustomRedirHandler
+        redirects:
+            'application/pdf': *pdf_redir
+            'application/x-pdf': *pdf_redir
+
         frame_insert_html: ./templates/frame_insert.html
         head_insert_html: ./templates/head_insert.html
         search_html: ./templates/index.html

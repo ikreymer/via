@@ -107,7 +107,6 @@ _WBWombat = (function() {
 
     //============================================
     function rewrite_url_(url) {
-
         // If undefined, just return it
         if (!url) {
             return url;
@@ -488,6 +487,13 @@ _WBWombat = (function() {
                 async = true;
             }
 
+            // extra check for correct scheme here.. maybe move to rewrite_url..
+            var curr_scheme = window.location.protocol + '//';
+
+            if (starts_with(url, wb_orig_scheme) && (wb_orig_scheme != curr_scheme)) {
+                url = curr_scheme + url.substring(wb_orig_scheme.length);
+            }
+
             return orig.call(this, method, url, async, user, password);
         }
 
@@ -508,7 +514,7 @@ _WBWombat = (function() {
         Element.prototype.setAttribute = function(name, value) {
             if (name) {
                 var lowername = name.toLowerCase();
-                if (lowername == "src" || lowername == "href") {
+                if (lowername == "src") {
                     if (!this._no_rewrite) {
                         value = rewrite_url(value);
                     }
@@ -534,10 +540,13 @@ _WBWombat = (function() {
     //============================================
     function init_date_override(timestamp) {
         timestamp = parseInt(timestamp) * 1000;
-        var timediff = Date.now() - timestamp;
+        var timezone = new Date().getTimezoneOffset() * 60 * 1000;
+        var timediff = Date.now() - (timestamp - timezone);
 
         window.__Date = window.Date;
         window.__Date_now = window.Date.now;
+        var utc = window.Date.UTC;
+        var parse = window.Date.parse;
 
         window.Date = function (Date) {
             return function (A, B, C, D, E, F, G) {
@@ -567,17 +576,20 @@ _WBWombat = (function() {
         window.Date.now = function() {
             return __Date_now() - timediff;
         }
+
+        window.Date.UTC = utc;
+        window.Date.parse = parse;
     }
 
     //============================================
     function init_worker_override() {
-        //if (!window.Worker) {
-        //    return;
-        //}
+        if (!window.Worker) {
+            return;
+        }
 
         // for now, disabling workers until override of worker content can be supported
         // hopefully, pages depending on workers will have a fallback
-        //window.Worker = undefined;
+        window.Worker = undefined;
     }
 
     //============================================
@@ -884,8 +896,7 @@ _WBWombat = (function() {
         init_open_override();
 
         // postMessage
-        // PATCH -- Disable
-        // init_postmessage_override();
+        //init_postmessage_override();
 
         // write
         init_write_override();
@@ -895,22 +906,22 @@ _WBWombat = (function() {
         //init_worker_override();
 
         // setAttribute
-        // init_setAttribute_override();
+        init_setAttribute_override();
 
         // Image
-        //init_image_override();
+        init_image_override();
 
         // Cookies
-        //init_cookies_override();
+        init_cookies_override();
 
         // DOM
         //init_dom_override();
 
         // Random
-        //init_seeded_random(timestamp);
+        init_seeded_random(timestamp);
 
         // Date
-        //init_date_override(timestamp);
+        init_date_override(timestamp);
 
         // expose functions
         this.extract_orig = extract_orig;

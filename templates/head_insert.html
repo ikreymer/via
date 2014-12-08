@@ -4,7 +4,7 @@
 <script src='{{ wbrequest.host_prefix }}/static/ann/wombat.js'> </script>
 <script>
   {% set urlsplit = cdx.original | urlsplit %}
-  if (window && window._WBWombat) {
+  if (window && _WBWombat && !_wb_wombat && !window._wb_is_inited) {
   var _wb_wombat = new _WBWombat("{{ wbrequest.wb_prefix}}",
                  "{{ cdx['timestamp'] if include_ts else ''}}",
                  "{{ urlsplit.scheme }}",

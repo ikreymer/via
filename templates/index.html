@@ -1,6 +1,24 @@
-<h1>pywb-hypothesis</h1>
-Enter a url to view with <a href="https://hypothes.is/">hypothes.is</a> annotations:
-<form onsubmit="url = document.getElementById('search').value; if (url != '') { document.location.href = '/h/' + url; } return false;">
-<input id="search" name="search" maxsize="30" style="font-size: 14px" placeholder="Enter url to search"/>
-<button type="submit">Search</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>via.hypothes.is</title>
+  <style>
+    @import url("//d2v52k3cl9vedd.cloudfront.net/basscss/4.1.7/basscss.min.css");
+    body { margin-top: 5%; font-family: "myriad-pro", sans-serif; }
+    h1 { color: #939393; }
+  </style>
+</head>
+<body>
+  <center>
+  <img src="http://hypothes.is/wp-content/themes/hypothesis-1.0.5/images/hypothelogo_light2.png" />
+  <h1>
+  </h1>
+  <form class="h3" onsubmit="url = document.getElementById('search').value; if (url != '') { document.location.href = '/h/' + url; } return false;">
+    <label for="search">Join the annotation conversation on any URL</label>
+    <input id="search" class="block sm-col-4 field-light" name="search" type="text" maxsize="30" placeholder="http://"/>
+    <button type="submit" class="button-blue">Annotate!</button>
+  </form>
+  </center>
+</body>
+</html>

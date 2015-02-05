@@ -14,7 +14,7 @@ collections:
         search_html: ./templates/index.html
         redir_to_exact: false
 
-        cookie_scope: exact
+        cookie_scope: default
 
         rewrite_opts:
             rewrite_rel_canon: false

@@ -27,3 +27,6 @@ static_routes:
     static/ann: ./static/
 
 framed_replay: false
+
+debug_echo_env: true
+debug_echo_req: true

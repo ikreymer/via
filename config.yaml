@@ -1,17 +1,15 @@
-pdf_redir: &pdf_redir '/static/ann/viewer/web/viewer.html?file=/h/id_/{0}'
-
+pdf_redir: &pdf_redir '/static/__shared/viewer/web/viewer.html?file=/id_/{0}'
 
 collections:
-    h:
+    '':
         index_paths: $liveweb
         wb_handler_class: !!python/name:pywb_h.CustomRedirHandler
         redirects:
             'application/pdf': *pdf_redir
             'application/x-pdf': *pdf_redir
 
-        frame_insert_html: ./templates/frame_insert.html
-        head_insert_html: ./templates/head_insert.html
-        search_html: ./templates/index.html
+        #frame_insert_html: ./templates/frame_insert.html
+        #head_insert_html: ./templates/head_insert.html
         redir_to_exact: false
 
         cookie_scope: default
@@ -19,11 +17,21 @@ collections:
         rewrite_opts:
             rewrite_rel_canon: false
             rewrite_base: false
+            client:
+                no_rewrite_prefixes:
+                    - 'https://hypothes.is/'
+                    - '/assets/'
 
-home_html: ./templates/index.html
+                skip_setAttribute: true
+                skip_dom: true
+                skip_postmessage: true
 
-static_routes:
-    static/default: pywb/static/
-    static/ann: ./static/
+#home_html: ./templates/index.html
+search_html: index.html
+home_html: index.html
+
+#static_routes:
+#    static/default: pywb/static/
+#    static/ann: ./static/
 
 framed_replay: false

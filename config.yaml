@@ -32,8 +32,8 @@ collections:
 search_html: index.html
 home_html: index.html
 
-#static_routes:
-#    static/default: pywb/static/
-#    static/ann: ./static/
+static_routes:
+    static/__pywb: pywb/static/
+    static/ann: ./static/
 
 framed_replay: false

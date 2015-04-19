@@ -1,17 +1,14 @@
-<script src='{{ wbrequest.host_prefix }}/static/__shared/inject_h.js'> </script>
-
-<script>
-var inited = false;
-
-_wb_js.create_banner_element = function(banner_id) {
-    if (inited || !window.document) {
-        return;
-    }
-
-    __pywb_h.init_h(window);
-    inited = true;
-}
-</script>
-
 <!-- Set canonical url -->
 <link rel="canonical" href="{{ cdx.url }}"/>
+
+<!-- Inject Hypothesis -->
+<script>
+(function () {
+var embed_script = document.createElement("script");
+embed_script.src = "https://hypothes.is/embed.js";
+document.head.appendChild(embed_script);
+window.hypothesisConfig = function() {
+    return {showHighlights: true};
+}
+})();
+</script>

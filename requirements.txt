@@ -1,3 +1,4 @@
 gevent
+ndg-httpsclient
 pywb>=0.9.6
 uwsgi>=2.0

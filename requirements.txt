@@ -1,4 +1,4 @@
 gevent
 ndg-httpsclient
-pywb>=0.9.6
+pywb>=0.10.0
 uwsgi>=2.0

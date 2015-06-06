@@ -22,9 +22,13 @@ collections:
                     - 'https://hypothes.is/'
                     - '/assets/'
 
-                skip_setAttribute: true
-                skip_dom: true
-                skip_postmessage: true
+                skip_createElement: true
+
+                http_cache: pass
+
+                #skip_setAttribute: true
+                #skip_dom: true
+                #skip_postmessage: true
 
     # redirect old path to root
     h: !!python/object:pywb_h.SimpleRedirHandler { redir_path: '/', status: '301 Permanent Redirect' }

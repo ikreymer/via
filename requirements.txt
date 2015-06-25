@@ -1,3 +1,4 @@
+cffi
 gevent
 ndg-httpsclient
 pywb>=0.10.0

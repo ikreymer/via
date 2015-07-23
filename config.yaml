@@ -1,4 +1,4 @@
-pdf_redir: &pdf_redir '/static/__shared/viewer/web/viewer.html?file=/id_/{0}'
+pdf_redir: &pdf_redir '/static/__shared/viewer/web/viewer.html?file={0}'
 
 collections:
     '':

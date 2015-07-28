@@ -6,3 +6,7 @@ PDFJS.getDocument = function getDocumentWithProxy(src) {
   src.url = '/id_/' + src.url;
   return _getDocument.apply(PDFJS, args);
 }
+/* Address https://github.com/hypothesis/via/issues/18 */
+window.hypothesisConfig = function() {
+    return {showHighlights: true};
+}

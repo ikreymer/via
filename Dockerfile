@@ -13,4 +13,4 @@ COPY ./static ./static
 
 EXPOSE 9080
 
-CMD uwsgi uwsgi.ini
+CMD ./run-uwsgi.sh

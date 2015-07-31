@@ -12,7 +12,7 @@ collections:
         #head_insert_html: ./templates/head_insert.html
         redir_to_exact: false
 
-        cookie_scope: default
+        cookie_scope: host
 
         rewrite_opts:
             rewrite_rel_canon: false

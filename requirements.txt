@@ -1,5 +1,5 @@
 cffi
 gevent
 ndg-httpsclient
-pywb>=0.10.5
+pywb>=0.10.6
 uwsgi>=2.0

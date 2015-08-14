@@ -1,3 +1,5 @@
+import urllib
+
 from pywb.webapp.live_rewrite_handler import RewriteHandler
 from pywb.framework.wbrequestresponse import WbResponse
 
@@ -24,9 +26,12 @@ class CustomRedirHandler(RewriteHandler):
             content_type = status_headers.get_header('Content-Type')
 
             redir = self.redirects.get(content_type)
+            # safe is used so output matches JavaScript's encodeURIComponent()
+            url = urllib.quote(unicode(wbrequest.wb_url.url).encode('utf-8'),
+                               safe='~()*!.\'')
 
             if redir:
-                return WbResponse.redir_response(redir.format(wbrequest.wb_url.url))
+                return WbResponse.redir_response(redir.format(url))
 
         return super(CustomRedirHandler, self)._make_response(wbrequest,
                                                               status_headers,

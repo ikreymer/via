@@ -16,7 +16,6 @@ collections:
 
         rewrite_opts:
             rewrite_rel_canon: false
-            rewrite_base: false
             client:
                 no_rewrite_prefixes:
                     - 'https://hypothes.is/'

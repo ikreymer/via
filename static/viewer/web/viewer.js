@@ -27,7 +27,6 @@
 
 'use strict';
 
-var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
 var DEFAULT_SCALE_DELTA = 1.1;
 var MIN_SCALE = 0.25;
 var MAX_SCALE = 10.0;
@@ -37,10 +36,12 @@ var SCALE_SELECT_PADDING = 22;
 var PAGE_NUMBER_LOADING_INDICATOR = 'visiblePageIsLoading';
 var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 
-PDFJS.imageResourcesPath = './images/';
-  PDFJS.workerSrc = '../build/pdf.worker.js';
-  PDFJS.cMapUrl = '../web/cmaps/';
-  PDFJS.cMapPacked = true;
+// This is a Hypothesis/Via custom patch. These paths have been updated to refer
+// to the static path of pywb.
+PDFJS.imageResourcesPath = '/static/pdfjs/web/images/';
+PDFJS.workerSrc = '/static/pdfjs/build/pdf.worker.js';
+PDFJS.cMapUrl = '/static/pdfjs/web/cmaps/';
+PDFJS.cMapPacked = true;
 
 var mozL10n = document.mozL10n || document.webL10n;
 
@@ -6679,9 +6680,9 @@ function webViewerLoad(evt) {
 }
 
 function webViewerInitialized() {
-  var queryString = document.location.search.substring(1);
-  var params = PDFViewerApplication.parseQueryString(queryString);
-  var file = 'file' in params ? params.file : DEFAULT_URL;
+  // This is a Hypothesis/Via custom patch. This URL will be set in the viewer
+  // template.
+  var file = window.VIEWER_PDF_URL;
 
   var fileInput = document.createElement('input');
   fileInput.id = 'fileInput';

@@ -11,9 +11,9 @@ Hosted at: https://via.hypothes.is/
 
 Some examples:
 
-[https://via.hypothes.is/h/http://hypothes.is/](https://via.hypothes.is/h/http://hypothes.is/)
+[https://via.hypothes.is/http://hypothes.is/](https://via.hypothes.is/http://hypothes.is/)
 
-[https://via.hypothes.is/h/http://www.autodidacts.io/openbci-brain-basics-neurons-structure-and-biology/](https://via.hypothes.is/h/http://www.autodidacts.io/openbci-brain-basics-neurons-structure-and-biology/)
+[https://via.hypothes.is/http://www.autodidacts.io/openbci-brain-basics-neurons-structure-and-biology/](https://via.hypothes.is/http://www.autodidacts.io/openbci-brain-basics-neurons-structure-and-biology/)
 
 
 ### Running Locally with Docker

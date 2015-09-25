@@ -48,6 +48,7 @@ def redirect_strip_matched_path(environ, start_response):
 
 
 application = wsgi.DispatcherMiddleware(pywb.apps.wayback.application, {
+    '/favicon.ico': static.Cling('static/favicon.ico'),
     '/static': static.Cling('static/'),
     '/static/__pywb': static.Cling(resource_filename('pywb', 'static/')),
     '/static/__shared/viewer/web/viewer.html': redirect_old_viewer,

@@ -1,7 +1,12 @@
 cffi
 gevent
 ndg-httpsclient
-pywb==0.10.9.1
 uwsgi>=2.0
 werkzeug>=0.10.4,<0.11.0
 static>=1.1.1,<1.2.0
+
+# this points to a development branch
+# of pywb with fixes for Safari and Microsoft Edge.
+# This should be replaced with 'pywb==0.11' when that
+# is released
+-e git://github.com/ikreymer/pywb.git@04104f04d3c13c05c696bf7a925a71abf759add0#egg=pywb

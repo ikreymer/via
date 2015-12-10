@@ -5,8 +5,13 @@ uwsgi>=2.0
 werkzeug>=0.10.4,<0.11.0
 static>=1.1.1,<1.2.0
 
-# this points to a development branch
-# of pywb with fixes for Safari and Microsoft Edge.
+# this points to the 'via' branch in robertknight/pywb
+# this is a fork of the upstream pywb with:
+#
+# - fixes for Safari and Microsoft Edge from the 'client-side-tests' branch
+# - A for Edge/IE from https://github.com/ikreymer/pywb/pull/159
+# - A fix for handling of rel=canonical URLs from https://github.com/ikreymer/pywb/pull/162
+#
 # This should be replaced with 'pywb==0.11' when that
 # is released
--e git://github.com/ikreymer/pywb.git@04104f04d3c13c05c696bf7a925a71abf759add0#egg=pywb
+-e git://github.com/robertknight/pywb.git@5817e8178c17ad20a3b113e704ce3afbef71cb88#egg=pywb

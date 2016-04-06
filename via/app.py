@@ -1,5 +1,6 @@
 from pkg_resources import resource_filename
 
+import logging
 import pywb.apps.wayback
 import static
 from werkzeug.exceptions import NotFound
@@ -7,6 +8,8 @@ from werkzeug.utils import redirect
 from werkzeug.wrappers import Request
 from werkzeug import wsgi
 
+
+logging.disable(logging.INFO)
 
 # Previously, PDFs were served at paths like
 #

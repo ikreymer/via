@@ -1,6 +1,7 @@
 from pkg_resources import resource_filename
 
 import logging
+import os
 import pywb.apps.wayback
 import static
 from werkzeug.exceptions import NotFound
@@ -50,7 +51,17 @@ def redirect_strip_matched_path(environ, start_response):
     return redirect(path, code=301)
 
 
-application = wsgi.DispatcherMiddleware(pywb.apps.wayback.application, {
+def app(environ, start_response):
+    embed_url = os.environ.get('H_EMBED_URL', 'https://hypothes.is/embed.js')
+
+    template_params = environ.get('pywb.template_params', {})
+    template_params['h_embed_url'] = embed_url
+    environ['pywb.template_params'] = template_params
+
+    return pywb.apps.wayback.application(environ, start_response)
+
+
+application = wsgi.DispatcherMiddleware(app, {
     '/favicon.ico': static.Cling('static/favicon.ico'),
     '/static': static.Cling('static/'),
     '/static/__pywb': static.Cling(resource_filename('pywb', 'static/')),

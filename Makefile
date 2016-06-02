@@ -1,6 +1,8 @@
+DOCKER_TAG = latest
+
 .PHONY: docker
 docker:
-	docker build -t hypothesis/via:latest .
+	docker build -t hypothesis/via:$(DOCKER_TAG) .
 
 .PHONY: clean
 clean:

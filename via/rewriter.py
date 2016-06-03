@@ -23,7 +23,7 @@ class TemplateRewriteHandler(RewriteHandler):
             if tpl_name is not None:
                 tpl = env.get_template(tpl_name)
                 result = tpl.render(url=wbrequest.wb_url.url)
-                return WbResponse.text_response(result.encode('utf-8-sig'),
+                return WbResponse.text_response(result,
                                                 content_type='text/html')
 
         return super(TemplateRewriteHandler, self)._make_response(

@@ -19,6 +19,7 @@ collections:
             client:
                 no_rewrite_prefixes:
                     - 'https://hypothes.is/'
+                    - 'https://stage.hypothes.is/'
                     - '/assets/'
 
                 #skip_createElement: true

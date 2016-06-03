@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import jinja2
 
 from pywb.webapp.live_rewrite_handler import RewriteHandler
@@ -24,7 +26,7 @@ class TemplateRewriteHandler(RewriteHandler):
                 tpl = env.get_template(tpl_name)
                 result = tpl.render(url=wbrequest.wb_url.url)
                 return WbResponse.text_response(result,
-                                                content_type='text/html')
+                                                content_type=b'text/html; charset=utf-8')
 
         return super(TemplateRewriteHandler, self)._make_response(
             wbrequest,

@@ -63,6 +63,7 @@ def app(environ, start_response):
 
 application = wsgi.DispatcherMiddleware(app, {
     '/favicon.ico': static.Cling('static/favicon.ico'),
+    '/robots.txt': static.Cling('static/robots.txt'),
     '/static': static.Cling('static/'),
     '/static/__pywb': static.Cling(resource_filename('pywb', 'static/')),
     '/static/__shared/viewer/web/viewer.html': redirect_old_viewer,

@@ -9,6 +9,7 @@ from werkzeug.utils import redirect
 from werkzeug.wrappers import Request
 from werkzeug import wsgi
 
+from via.security import RequestHeaderSanitiser, ResponseHeaderSanitiser
 
 logging.disable(logging.INFO)
 
@@ -69,3 +70,5 @@ application = wsgi.DispatcherMiddleware(app, {
     '/static/__shared/viewer/web/viewer.html': redirect_old_viewer,
     '/h': redirect_strip_matched_path,
 })
+application = RequestHeaderSanitiser(application)
+application = ResponseHeaderSanitiser(application)

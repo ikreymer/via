@@ -9,6 +9,7 @@ from werkzeug.utils import redirect
 from werkzeug.wrappers import Request
 from werkzeug import wsgi
 
+from via.blocker import Blocker
 from via.security import RequestHeaderSanitiser, ResponseHeaderSanitiser
 
 logging.disable(logging.INFO)
@@ -62,7 +63,10 @@ def app(environ, start_response):
     return pywb.apps.wayback.application(environ, start_response)
 
 
-application = wsgi.DispatcherMiddleware(app, {
+application = RequestHeaderSanitiser(app)
+application = ResponseHeaderSanitiser(application)
+application = Blocker(application)
+application = wsgi.DispatcherMiddleware(application, {
     '/favicon.ico': static.Cling('static/favicon.ico'),
     '/robots.txt': static.Cling('static/robots.txt'),
     '/static': static.Cling('static/'),
@@ -70,5 +74,3 @@ application = wsgi.DispatcherMiddleware(app, {
     '/static/__shared/viewer/web/viewer.html': redirect_old_viewer,
     '/h': redirect_strip_matched_path,
 })
-application = RequestHeaderSanitiser(application)
-application = ResponseHeaderSanitiser(application)

@@ -13,7 +13,10 @@ var embed_script = document.createElement("script");
 embed_script.src = "{{ h_embed_url }}";
 document.head.appendChild(embed_script);
 window.hypothesisConfig = function() {
-    return {showHighlights: true};
+    return {
+      showHighlights: true,
+      appType: 'via'
+    };
 }
 })();
 </script>

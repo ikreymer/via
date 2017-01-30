@@ -30,4 +30,4 @@ COPY . .
 EXPOSE 9080
 
 USER via
-CMD ./run-uwsgi.sh
+CMD ["uwsgi", "uwsgi.ini"]

@@ -11,8 +11,10 @@ from werkzeug import wsgi
 
 from via.blocker import Blocker
 from via.security import RequestHeaderSanitiser, ResponseHeaderSanitiser
+from via.useragent import UserAgentDecorator
 
 logging.disable(logging.INFO)
+
 
 # Previously, PDFs were served at paths like
 #
@@ -66,6 +68,7 @@ def app(environ, start_response):
 application = RequestHeaderSanitiser(app)
 application = ResponseHeaderSanitiser(application)
 application = Blocker(application)
+application = UserAgentDecorator(application, 'Hypothesis-Via')
 application = wsgi.DispatcherMiddleware(application, {
     '/favicon.ico': static.Cling('static/favicon.ico'),
     '/robots.txt': static.Cling('static/robots.txt'),

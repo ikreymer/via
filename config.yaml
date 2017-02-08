@@ -18,6 +18,7 @@ collections:
             rewrite_rel_canon: false
             client:
                 no_rewrite_prefixes:
+                    - 'http://localhost:5000/' # Hypothesis dev server
                     - 'https://hypothes.is/'
                     - 'https://stage.hypothes.is/'
                     - '/assets/'

@@ -17,3 +17,7 @@ deps:
 .PHONY: test
 test:
 	python -m pytest tests
+
+.PHONY: serve
+serve:
+	uwsgi uwsgi.ini

@@ -3,6 +3,7 @@ MAINTAINER Hypothes.is Project and Ilya Kreymer
 
 # Install runtime deps.
 RUN apk add --update \
+    collectd \
     libffi \
     openssl \
     supervisor \
@@ -24,6 +25,11 @@ RUN apk add --update --virtual build-deps \
   && pip install --no-cache-dir -r requirements.txt \
   && apk del build-deps \
   && rm -rf /var/cache/apk/*
+
+# Copy collectd config
+COPY conf/collectd.conf /etc/collectd/collectd.conf
+RUN mkdir /etc/collectd/collectd.conf.d \
+ && chown via:via /etc/collectd/collectd.conf.d
 
 # Install app.
 COPY . .

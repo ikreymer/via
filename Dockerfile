@@ -5,6 +5,7 @@ MAINTAINER Hypothes.is Project and Ilya Kreymer
 RUN apk add --update \
     libffi \
     openssl \
+    supervisor \
   && rm -rf /var/cache/apk/*
 
 # Create the via user, group, home directory and package directory.
@@ -30,4 +31,4 @@ COPY . .
 EXPOSE 9080
 
 USER via
-CMD ["uwsgi", "uwsgi.ini"]
+CMD ["supervisord", "-c" , "conf/supervisord.conf"]

@@ -20,7 +20,7 @@ collections:
                 no_rewrite_prefixes:
                     - 'http://localhost:5000/' # Hypothesis dev server
                     - 'https://hypothes.is/'
-                    - 'https://stage.hypothes.is/'
+                    - 'https://qa.hypothes.is/'
                     - '/assets/'
 
                 #skip_createElement: true

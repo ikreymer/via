@@ -21,6 +21,7 @@ collections:
                     - 'http://localhost:5000/' # Hypothesis dev server
                     - 'https://hypothes.is/'
                     - 'https://qa.hypothes.is/'
+                    - 'https://cdn.hypothes.is/'
                     - '/assets/'
 
                 #skip_createElement: true

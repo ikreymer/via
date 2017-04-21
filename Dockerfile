@@ -37,6 +37,10 @@ COPY conf/squid.conf /etc/squid/squid.conf
 RUN mkdir /var/spool/squid \
  && chown via:via /var/run/squid /var/spool/squid /var/log/squid
 
+# Use local squid by default
+ENV HTTP_PROXY http://localhost:3128
+ENV HTTPS_PROXY http://localhost:3128
+
 # Install app.
 COPY . .
 

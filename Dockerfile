@@ -7,6 +7,7 @@ RUN apk add --update \
     libffi \
     openssl \
     supervisor \
+    squid \
   && rm -rf /var/cache/apk/*
 
 # Create the via user, group, home directory and package directory.
@@ -30,6 +31,15 @@ RUN apk add --update --virtual build-deps \
 COPY conf/collectd.conf /etc/collectd/collectd.conf
 RUN mkdir /etc/collectd/collectd.conf.d \
  && chown via:via /etc/collectd/collectd.conf.d
+
+# Copy squid config
+COPY conf/squid.conf /etc/squid/squid.conf
+RUN mkdir /var/spool/squid \
+ && chown via:via /var/run/squid /var/spool/squid /var/log/squid
+
+# Use local squid by default
+ENV HTTP_PROXY http://localhost:3128
+ENV HTTPS_PROXY http://localhost:3128
 
 # Install app.
 COPY . .

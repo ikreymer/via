@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import cgi
 import jinja2
 
 from pywb.webapp.live_rewrite_handler import RewriteHandler
@@ -20,7 +21,8 @@ class TemplateRewriteHandler(RewriteHandler):
         # only redirect for non-identity and non-embeds
         if not wbrequest.wb_url.is_embed and not wbrequest.wb_url.is_identity:
             content_type = status_headers.get_header('Content-Type')
-            tpl_name = self.templates.get(content_type)
+            cleaned_content_type = _lookup_key(content_type)
+            tpl_name = self.templates.get(cleaned_content_type)
 
             if tpl_name is not None:
                 tpl = env.get_template(tpl_name)
@@ -35,3 +37,12 @@ class TemplateRewriteHandler(RewriteHandler):
             status_headers,
             gen,
             is_rewritten)
+
+
+def _lookup_key(val):
+    try:
+        type_, params = cgi.parse_header(val)
+    except TypeError:
+        return val
+    else:
+        return type_

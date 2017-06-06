@@ -1,5 +1,7 @@
 #!groovy
 
+def dockerTag = null
+
 node {
     stage 'Build'
     checkout scm
@@ -29,3 +31,18 @@ node {
         img.push('latest')
     }
 }
+
+
+// The QA Deploy stage is outside of the node block so it doesn't
+// block an executor while it's twiddling its thumbs and waiting
+// for the deploy job to finish.
+if (env.BRANCH_NAME != 'master') {
+    return
+}
+stage 'QA Deploy'
+build job: 'deployment',
+      parameters: [[$class: 'StringParameterValue', name: 'APP', value: 'via'],
+                   [$class: 'StringParameterValue', name: 'TYPE', value: 'exact-version'],
+                   [$class: 'StringParameterValue', name: 'APP_DOCKER_VERSION', value: dockerTag],
+                   [$class: 'StringParameterValue', name: 'ENV', value: 'qa']]
+

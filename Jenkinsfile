@@ -4,12 +4,20 @@ node {
     stage 'Build'
     checkout scm
 
-    // Store the short commit id for use tagging images
-    sh 'git rev-parse --short HEAD > GIT_SHA'
-    gitSha = readFile('GIT_SHA').trim()
+    buildVersion = sh(
+        script: 'python -c "import via; print(via.__version__)"',
+        returnStdout: true
+    ).trim()
 
-    sh "make docker DOCKER_TAG=${gitSha}"
-    img = docker.image "hypothesis/via:${gitSha}"
+    // Docker tags may not contain '+'
+    dockerTag = buildVersion.replace('+', '-')
+
+    // Set build metadata
+    currentBuild.displayName = buildVersion
+    currentBuild.description = "Docker: ${dockerTag}"
+
+    sh "make docker DOCKER_TAG=${dockerTag}"
+    img = docker.image "hypothesis/via:${dockerTag}"
 
     // We only push the image to the Docker Hub if we're on master
     if (env.BRANCH_NAME != 'master') {
@@ -17,6 +25,7 @@ node {
     }
     stage 'Push'
     docker.withRegistry('', 'docker-hub-build') {
-        img.push('auto')
+        img.push()
+        img.push('latest')
     }
 }

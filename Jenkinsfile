@@ -27,18 +27,13 @@ node {
 onlyOnMaster {
     milestone()
     stage('qa deploy') {
-        lock(resource: 'via-qa-deploy', inversePrecedence: true) {
-            milestone()
-            deployApp(image: img, app: 'via', env: 'qa')
-        }
+        deployApp(image: img, app: 'via', env: 'qa')
     }
 
     milestone()
     stage('prod deploy') {
         input(message: "Deploy to prod?")
-        lock(resource: 'via-prod-deploy', inversePrecedence: true) {
-            milestone()
-            deployApp(image: img, app: 'via', env: 'prod')
-        }
+        milestone()
+        deployApp(image: img, app: 'via', env: 'prod')
     }
 }

@@ -13,7 +13,7 @@ node {
     stage('test') {
         testApp(image: img, runArgs: '-u root') {
             sh 'HTTP_PROXY= HTTPS_PROXY= pip install pytest'
-            sh 'python -m pytest tests'
+            sh 'cd /var/lib/via && python -m pytest tests'
         }
     }
 

@@ -42,6 +42,11 @@ RUN mkdir /var/spool/squid \
 ENV HTTP_PROXY http://localhost:3128
 ENV HTTPS_PROXY http://localhost:3128
 
+# Install goreplay
+RUN wget -O /tmp/gor.tar.gz https://github.com/buger/goreplay/releases/download/v0.16.1/gor_0.16.1_x64.tar.gz \
+  && tar -xzf /tmp/gor.tar.gz -C /usr/local/bin \
+  && rm /tmp/gor.tar.gz
+
 # Install app.
 COPY . .
 

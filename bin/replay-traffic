@@ -1,0 +1,18 @@
+#!/bin/sh
+
+: ${APP_URL:=}
+: ${REPLAY_URL:=}
+
+set -eu
+
+if [ -n "$REPLAY_URL" -a -n "$APP_URL" ]; then
+  goreplay --input-raw :9080 \
+           --output-http="$REPLAY_URL" \
+           --http-allow-method GET \
+           --http-allow-method OPTIONS \
+           --http-allow-url /http \
+           --http-disallow-header "Referer: $APP_URL"
+else
+  echo "INFO: REPLAY_URL and/or APP_URL not provided so will not try to replay traffic"
+  exit 0
+fi

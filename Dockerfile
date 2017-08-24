@@ -47,5 +47,4 @@ COPY . .
 
 EXPOSE 9080
 
-USER via
 CMD ["supervisord", "-c" , "conf/supervisord.conf"]

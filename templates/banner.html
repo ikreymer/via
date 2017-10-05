@@ -4,11 +4,6 @@
 <!-- Inject Hypothesis -->
 <script>
 (function () {
-// Only run injection for top-level window!
-if (window != window.top) {
-    return;
-}
-
 var embed_script = document.createElement("script");
 embed_script.src = "{{ h_embed_url }}";
 document.head.appendChild(embed_script);

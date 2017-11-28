@@ -4,6 +4,15 @@
 <!-- Inject Hypothesis -->
 <script>
 (function () {
+
+// Disable injection in iframes in the top-level page that was proxied through
+// Via. These proxied iframes have URLs of the form `${VIA_URL}/if_/${ORIGINAL_URL}`.
+//
+// See https://github.com/hypothesis/client/issues/568.
+if (window.location.pathname.indexOf('/if_/') === 0) {
+  return;
+}
+
 var embed_script = document.createElement("script");
 embed_script.src = "{{ h_embed_url }}";
 document.head.appendChild(embed_script);

@@ -3,6 +3,9 @@
 
 <!-- Inject Hypothesis -->
 <script>
+wbinfo.wombat_opts['no_rewrite_prefixes'] = {{ config.no_rewrite_prefixes | tojson }};
+
+
 (function () {
 
 // Disable injection in iframes in the top-level page that was proxied through
@@ -12,6 +15,8 @@
 if (window.location.pathname.indexOf('/if_/') === 0) {
   return;
 }
+
+{% set h_embed_url = 'https://hypothes.is/embed.js' %}
 
 var embed_script = document.createElement("script");
 embed_script.src = "{{ h_embed_url }}";
